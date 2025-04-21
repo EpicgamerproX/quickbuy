@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PricePulse - Compare Prices Across All Platforms</title>
+    <title>PricePulse - Real-Time Price Comparison</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -159,6 +159,20 @@
         .meesho { color: #F43397; }
         .jiomart { color: #1A73E8; }
         .swiggy { color: #FC8019; }
+        
+        /* Scraping status */
+        .scraping-status {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+        .status-success {
+            border-left: 4px solid #28a745;
+        }
+        .status-error {
+            border-left: 4px solid #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -193,15 +207,15 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">Compare Prices Across All Indian Platforms</h1>
-            <p class="lead mb-5">Find the best deals on Amazon, Flipkart, Meesho, JioMart, Swiggy, and more in one click</p>
+            <h1 class="display-4 fw-bold mb-4">Real-Time Price Comparison</h1>
+            <p class="lead mb-5">Get live prices from Amazon, Flipkart, and more - no APIs needed</p>
             
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="search-box d-flex align-items-center">
-                        <input type="text" class="search-input" placeholder="Search for products, groceries, food...">
-                        <button class="search-btn ms-auto">
-                            <i class="fas fa-search me-2"></i>Search
+                        <input type="text" class="search-input" id="productInput" placeholder="Search for products...">
+                        <button class="search-btn ms-auto" id="scrapeBtn">
+                            <i class="fas fa-bolt me-2"></i>Live Search
                         </button>
                     </div>
                 </div>
@@ -209,10 +223,9 @@
             
             <div class="mt-4">
                 <span class="text-white-50 me-2">Popular:</span>
-                <button class="btn btn-sm btn-outline-light me-2">iPhone 15</button>
-                <button class="btn btn-sm btn-outline-light me-2">Groceries</button>
-                <button class="btn btn-sm btn-outline-light me-2">Restaurants</button>
-                <button class="btn btn-sm btn-outline-light">Fashion</button>
+                <button class="btn btn-sm btn-outline-light me-2" data-search="iPhone 15">iPhone 15</button>
+                <button class="btn btn-sm btn-outline-light me-2" data-search="Air Conditioner">AC</button>
+                <button class="btn btn-sm btn-outline-light" data-search="Samsung TV">Samsung TV</button>
             </div>
         </div>
     </section>
@@ -244,28 +257,23 @@
                     <span class="jiomart fw-bold">JioMart</span>
                 </div>
             </div>
-            <div class="col-auto">
-                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
-                    <img src="https://logo.clearbit.com/swiggy.com" alt="Swiggy" class="platform-logo">
-                    <span class="swiggy fw-bold">Swiggy</span>
-                </div>
-            </div>
-            <!-- Add more platforms as needed -->
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="container">
+        <!-- Scraping Status -->
+        <div id="scrapingStatus"></div>
+        
         <!-- Filters -->
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="d-flex align-items-center">
                     <span class="me-2">Sort by:</span>
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option selected>Lowest Price</option>
-                        <option>Highest Discount</option>
-                        <option>Best Rating</option>
-                        <option>Fastest Delivery</option>
+                    <select class="form-select form-select-sm" id="sortBy" style="width: auto;">
+                        <option value="price-asc" selected>Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="discount">Highest Discount</option>
                     </select>
                 </div>
             </div>
@@ -283,97 +291,45 @@
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mt-3">Searching across all platforms...</p>
+            <p class="mt-3">Scraping live data from stores...</p>
         </div>
         
         <!-- Results Grid -->
         <div class="row" id="results-container">
-            <!-- Sample Product Cards (will be populated by JavaScript) -->
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="product-card">
-                    <div class="position-relative">
-                        <img src="https://via.placeholder.com/300" class="product-img img-fluid w-100" alt="Product">
-                        <span class="platform-tag">
-                            <img src="https://logo.clearbit.com/amazon.in" alt="Amazon" height="16" class="me-1">
-                            Amazon
-                        </span>
-                    </div>
-                    <div class="p-3">
-                        <h5 class="mb-2">OnePlus Nord CE 3 Lite 5G</h5>
-                        <div class="d-flex align-items-center mb-2">
-                            <span class="discount-badge me-2">25% OFF</span>
-                            <small class="text-success"><i class="fas fa-check-circle me-1"></i>In Stock</small>
-                        </div>
-                        <div class="mb-3">
-                            <span class="price">₹18,999</span>
-                            <span class="original-price ms-2">₹24,999</span>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <div class="me-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <small>4.5 (1,240)</small>
-                            </div>
-                            <div>
-                                <i class="fas fa-shipping-fast text-primary"></i>
-                                <small>Free Delivery</small>
-                            </div>
-                        </div>
-                        <a href="https://www.amazon.in" class="view-btn btn btn-sm" target="_blank">
-                            <i class="fas fa-external-link-alt me-1"></i>View on Amazon
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- More sample cards would go here for other platforms -->
+            <!-- Results will appear here -->
         </div>
-        
-        <!-- Pagination -->
-        <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
     </div>
 
     <!-- How It Works Section -->
     <section class="bg-light py-5 mt-5" id="how-it-works">
         <div class="container">
-            <h2 class="text-center mb-5">How PricePulse Works</h2>
+            <h2 class="text-center mb-5">How It Works</h2>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="text-center p-4">
                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
-                            <i class="fas fa-search fa-2x"></i>
+                            <i class="fas fa-bolt fa-2x"></i>
                         </div>
-                        <h4>1. Search</h4>
-                        <p>Enter what you're looking for - from electronics to groceries to food delivery.</p>
+                        <h4>1. Live Scraping</h4>
+                        <p>We fetch real-time prices directly from retailer websites, no delayed API data.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="text-center p-4">
                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
-                            <i class="fas fa-exchange-alt fa-2x"></i>
+                            <i class="fas fa-shield-alt fa-2x"></i>
                         </div>
-                        <h4>2. Compare</h4>
-                        <p>See prices from all major Indian platforms side-by-side in one view.</p>
+                        <h4>2. No APIs Needed</h4>
+                        <p>Works even when official APIs are down or unavailable.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="text-center p-4">
                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
-                            <i class="fas fa-external-link-alt fa-2x"></i>
+                            <i class="fas fa-lock fa-2x"></i>
                         </div>
-                        <h4>3. Save</h4>
-                        <p>Click through to your preferred platform to complete your purchase.</p>
+                        <h4>3. Client-Side Only</h4>
+                        <p>All scraping happens in your browser for privacy.</p>
                     </div>
                 </div>
             </div>
@@ -386,46 +342,33 @@
             <div class="row">
                 <div class="col-lg-4 mb-4">
                     <h5 class="mb-3"><i class="fas fa-search-dollar me-2"></i>PricePulse</h5>
-                    <p>Your one-stop solution for comparing prices across all major Indian e-commerce platforms, grocery delivery, and food services.</p>
+                    <p>Real-time price comparison without relying on APIs. Get the most current prices directly from retailer websites.</p>
                     <div class="mt-3">
-                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-github"></i></a>
                         <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="mb-3">Quick Links</h5>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="mb-3">Supported Platforms</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-white">Home</a></li>
-                        <li class="mb-2"><a href="#platforms" class="text-white">Platforms</a></li>
-                        <li class="mb-2"><a href="#how-it-works" class="text-white">How It Works</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">Blog</a></li>
+                        <li class="mb-2"><i class="fab fa-amazon me-2 amazon"></i> Amazon India</li>
+                        <li class="mb-2"><i class="fas fa-shopping-bag me-2 flipkart"></i> Flipkart</li>
+                        <li class="mb-2"><i class="fas fa-store me-2 meesho"></i> Meesho</li>
+                        <li class="mb-2"><i class="fas fa-mobile-alt me-2 jiomart"></i> JioMart</li>
                     </ul>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="mb-3">Platforms</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-white">Amazon</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">Flipkart</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">Meesho</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">JioMart</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">Swiggy</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-4 mb-4">
-                    <h5 class="mb-3">Contact Us</h5>
-                    <p><i class="fas fa-envelope me-2"></i> support@pricepulse.in</p>
-                    <p><i class="fas fa-phone me-2"></i> +91 98765 43210</p>
-                    <div class="input-group mb-3 mt-4">
-                        <input type="email" class="form-control" placeholder="Your email">
-                        <button class="btn btn-primary" type="button">Subscribe</button>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="mb-3">Important Note</h5>
+                    <div class="alert alert-warning bg-dark border-warning text-white">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        This demo uses CORS proxies which may be rate-limited. For production use, consider setting up your own proxy server.
                     </div>
                 </div>
             </div>
             <hr class="bg-light">
             <div class="text-center pt-3">
-                <p class="mb-0">&copy; 2023 PricePulse. All rights reserved.</p>
+                <p class="mb-0">&copy; 2023 PricePulse. Educational demo only.</p>
             </div>
         </div>
     </footer>
@@ -434,133 +377,189 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- Custom JavaScript -->
+    <!-- Scraping Script -->
     <script>
         $(document).ready(function() {
-            // Sample platform data
-            const platforms = [
-                { name: "Amazon", logo: "https://logo.clearbit.com/amazon.in", class: "amazon" },
-                { name: "Flipkart", logo: "https://logo.clearbit.com/flipkart.com", class: "flipkart" },
-                { name: "Meesho", logo: "https://logo.clearbit.com/meesho.com", class: "meesho" },
-                { name: "JioMart", logo: "https://logo.clearbit.com/jiomart.com", class: "jiomart" },
-                { name: "Swiggy", logo: "https://logo.clearbit.com/swiggy.com", class: "swiggy" },
-                { name: "Zomato", logo: "https://logo.clearbit.com/zomato.com", class: "text-danger" },
-                { name: "BigBasket", logo: "https://logo.clearbit.com/bigbasket.com", class: "text-success" },
-                { name: "Myntra", logo: "https://logo.clearbit.com/myntra.com", class: "text-info" }
-            ];
+            // Quick search buttons
+            $('[data-search]').click(function() {
+                const query = $(this).data('search');
+                $('#productInput').val(query);
+                triggerSearch(query);
+            });
             
-            // Search functionality
-            $('.search-btn, .search-input').on('keypress', function(e) {
-                if (e.which === 13 || $(this).hasClass('search-btn')) {
-                    const query = $('.search-input').val().trim();
-                    if (query) {
-                        performSearch(query);
-                    }
+            // Main search button
+            $('#scrapeBtn').click(function() {
+                const query = $('#productInput').val().trim();
+                if (query) triggerSearch(query);
+            });
+            
+            // Enter key in search box
+            $('#productInput').keypress(function(e) {
+                if (e.which === 13) {
+                    const query = $(this).val().trim();
+                    if (query) triggerSearch(query);
                 }
             });
             
-            // Quick search buttons
-            $('.btn-outline-light').click(function() {
-                const query = $(this).text().trim();
-                $('.search-input').val(query);
-                performSearch(query);
-            });
-            
-            function performSearch(query) {
+            function triggerSearch(query) {
                 $('#loading-spinner').show();
-                $('#results-container').html('');
+                $('#results-container').empty();
+                $('#scrapingStatus').empty();
+                $('#result-count').text('0 results');
                 
-                // Simulate API call delay
-                setTimeout(function() {
-                    generateSampleResults(query);
-                    $('#loading-spinner').hide();
-                    
-                    // Scroll to results
-                    $('html, body').animate({
-                        scrollTop: $("#results-container").offset().top - 100
-                    }, 500);
-                }, 1500);
+                // Scrape platforms sequentially
+                scrapePlatforms(query, ['flipkart', 'amazon']);
             }
             
-            function generateSampleResults(query) {
-                // Generate results from multiple platforms
-                const sampleResults = [];
-                
-                platforms.forEach(platform => {
-                    const discount = Math.floor(Math.random() * 60);
-                    const originalPrice = Math.floor(Math.random() * 50000) + 1000;
-                    const price = originalPrice - (originalPrice * discount / 100);
+            async function scrapePlatforms(query, platforms) {
+                for (const platform of platforms) {
+                    try {
+                        addStatus(`Starting ${platform} scrape...`, 'info');
+                        
+                        const data = await (platform === 'flipkart' ? 
+                            scrapeFlipkart(query) : 
+                            scrapeAmazon(query));
+                        
+                        addStatus(`Found ${data.length} ${platform} results`, 'success');
+                        displayResults(data, platform);
+                        
+                    } catch (error) {
+                        addStatus(`${platform} error: ${error.message}`, 'error');
+                    }
                     
-                    sampleResults.push({
-                        name: `${query} (${platform.name} Special)`,
-                        price: price.toFixed(2),
-                        originalPrice: originalPrice.toFixed(2),
-                        discount: discount,
-                        platform: platform.name,
-                        logo: platform.logo,
-                        platformClass: platform.class,
-                        rating: (Math.random() * 1 + 4).toFixed(1),
-                        reviews: Math.floor(Math.random() * 10000),
-                        inStock: Math.random() > 0.2,
-                        delivery: Math.random() > 0.5 ? "Free Delivery" : "Delivery: ₹49"
-                    });
+                    // Add delay between scrapes
+                    await delay(2000);
+                }
+                
+                $('#loading-spinner').hide();
+                updateResultCount();
+            }
+            
+            // Flipkart Scraper
+            async function scrapeFlipkart(product) {
+                const url = `https://www.flipkart.com/search?q=${encodeURIComponent(product)}`;
+                const proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
+                
+                const response = await fetch(proxyUrl, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 });
                 
-                // Update result count
-                $('#result-count').text(`${sampleResults.length} results for "${query}"`);
+                if (!response.ok) throw new Error('Failed to fetch Flipkart');
                 
-                // Generate product cards
-                sampleResults.forEach(product => {
-                    const discountBadge = product.discount > 0 ? 
-                        `<span class="discount-badge me-2">${product.discount}% OFF</span>` : '';
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const items = doc.querySelectorAll('div[data-id]');
+                
+                return Array.from(items).map(item => ({
+                    name: item.querySelector('a[title]')?.title || item.querySelector('div._4rR01T')?.textContent || 'No title',
+                    price: item.querySelector('div._30jeq3')?.textContent || 'Price not found',
+                    originalPrice: item.querySelector('div._3I9_wc')?.textContent || '',
+                    url: 'https://www.flipkart.com' + (item.querySelector('a[href]')?.getAttribute('href') || '#'),
+                    platform: 'Flipkart',
+                    platformClass: 'flipkart',
+                    inStock: true,
+                    image: item.querySelector('img._396cs4')?.src || 'https://via.placeholder.com/150'
+                })).slice(0, 5);
+            }
+            
+            // Amazon Scraper
+            async function scrapeAmazon(product) {
+                const url = `https://www.amazon.in/s?k=${encodeURIComponent(product)}`;
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error('Failed to fetch Amazon');
+                
+                const { contents } = await response.json();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(contents, 'text/html');
+                const items = doc.querySelectorAll('.s-result-item');
+                
+                return Array.from(items).map(item => ({
+                    name: item.querySelector('h2 a span')?.textContent || 'No title',
+                    price: item.querySelector('.a-price .a-offscreen')?.textContent || 'Price not found',
+                    originalPrice: item.querySelector('.a-price[data-a-strike="true"] .a-offscreen')?.textContent || '',
+                    url: 'https://www.amazon.in' + (item.querySelector('h2 a')?.getAttribute('href') || '#'),
+                    platform: 'Amazon',
+                    platformClass: 'amazon',
+                    inStock: !!item.querySelector('.a-color-success'),
+                    image: item.querySelector('img.s-image')?.src || 'https://via.placeholder.com/150'
+                })).filter(item => item.name !== 'No title').slice(0, 5);
+            }
+            
+            function displayResults(data, platform) {
+                const container = $('#results-container');
+                
+                data.forEach(item => {
+                    const discount = calculateDiscount(item.price, item.originalPrice);
                     
-                    const originalPrice = product.discount > 0 ? 
-                        `<span class="original-price ms-2">₹${product.originalPrice}</span>` : '';
-                    
-                    const stockBadge = product.inStock ? 
-                        `<small class="text-success"><i class="fas fa-check-circle me-1"></i>In Stock</small>` :
-                        `<small class="text-danger"><i class="fas fa-times-circle me-1"></i>Out of Stock</small>`;
-                    
-                    const productCard = `
+                    const card = `
                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                             <div class="product-card">
                                 <div class="position-relative">
-                                    <img src="https://via.placeholder.com/300?text=${encodeURIComponent(query)}" class="product-img img-fluid w-100" alt="${product.name}">
+                                    <img src="${item.image}" class="product-img img-fluid w-100" alt="${item.name}">
                                     <span class="platform-tag">
-                                        <img src="${product.logo}" alt="${product.platform}" height="16" class="me-1">
-                                        <span class="${product.platformClass}">${product.platform}</span>
+                                        <span class="${item.platformClass}">${item.platform}</span>
                                     </span>
                                 </div>
                                 <div class="p-3">
-                                    <h5 class="mb-2">${product.name}</h5>
+                                    <h5 class="mb-2">${item.name}</h5>
                                     <div class="d-flex align-items-center mb-2">
-                                        ${discountBadge}
-                                        ${stockBadge}
+                                        ${discount > 0 ? `<span class="discount-badge me-2">${discount}% OFF</span>` : ''}
+                                        <small class="${item.inStock ? 'text-success' : 'text-danger'}">
+                                            <i class="fas ${item.inStock ? 'fa-check-circle' : 'fa-times-circle'} me-1"></i>
+                                            ${item.inStock ? 'In Stock' : 'Out of Stock'}
+                                        </small>
                                     </div>
                                     <div class="mb-3">
-                                        <span class="price">₹${product.price}</span>
-                                        ${originalPrice}
+                                        <span class="price">${item.price}</span>
+                                        ${item.originalPrice ? `<span class="original-price ms-2">${item.originalPrice}</span>` : ''}
                                     </div>
-                                    <div class="d-flex mb-3">
-                                        <div class="me-2">
-                                            <i class="fas fa-star text-warning"></i>
-                                            <small>${product.rating} (${product.reviews})</small>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-shipping-fast text-primary"></i>
-                                            <small>${product.delivery}</small>
-                                        </div>
-                                    </div>
-                                    <a href="https://www.${product.platform.toLowerCase().replace(' ', '')}.com" class="view-btn btn btn-sm" target="_blank">
-                                        <i class="fas fa-external-link-alt me-1"></i>View on ${product.platform}
+                                    <a href="${item.url}" class="view-btn btn btn-sm" target="_blank">
+                                        <i class="fas fa-external-link-alt me-1"></i>View on ${item.platform}
                                     </a>
                                 </div>
                             </div>
                         </div>
                     `;
                     
-                    $('#results-container').append(productCard);
+                    container.append(card);
                 });
+            }
+            
+            function calculateDiscount(currentPrice, originalPrice) {
+                if (!originalPrice || !currentPrice) return 0;
+                
+                const extractNumber = (str) => parseFloat(str.replace(/[^\d.]/g, ''));
+                const current = extractNumber(currentPrice);
+                const original = extractNumber(originalPrice);
+                
+                if (original > 0 && current > 0) {
+                    return Math.round(((original - current) / original) * 100);
+                }
+                return 0;
+            }
+            
+            function addStatus(message, type) {
+                const statusDiv = $('#scrapingStatus');
+                const statusClass = type === 'error' ? 'status-error' : 'status-success';
+                
+                statusDiv.append(`
+                    <div class="scraping-status ${statusClass}">
+                        <i class="fas ${type === 'error' ? 'fa-times-circle text-danger' : 'fa-check-circle text-success'} me-2"></i>
+                        ${message}
+                    </div>
+                `);
+            }
+            
+            function updateResultCount() {
+                const count = $('#results-container .product-card').length;
+                $('#result-count').text(`${count} results`);
+            }
+            
+            function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
             }
         });
     </script>
