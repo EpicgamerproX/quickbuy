@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PriceCompare - Find the Best Deals Online</title>
+    <title>PriceCompare - Emergency Mode</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -13,6 +13,7 @@
             --accent-color: #4cc9f0;
             --light-color: #f8f9fa;
             --dark-color: #212529;
+            --emergency-color: #dc3545;
         }
         
         body {
@@ -26,11 +27,22 @@
         }
         
         .hero-section {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--emergency-color), #c82333);
             color: white;
             padding: 4rem 0;
             border-radius: 0 0 20px 20px;
             margin-bottom: 2rem;
+        }
+        
+        .emergency-alert {
+            animation: pulse 2s infinite;
+            border-left: 5px solid var(--emergency-color);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
         }
         
         .search-box {
@@ -48,7 +60,7 @@
         }
         
         .search-btn {
-            background: var(--primary-color);
+            background: var(--emergency-color);
             color: white;
             border: none;
             border-radius: 50px;
@@ -58,22 +70,8 @@
         }
         
         .search-btn:hover {
-            background: var(--secondary-color);
+            background: #c82333;
             transform: translateY(-2px);
-        }
-        
-        .filter-btn {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 30px;
-            padding: 5px 15px;
-            margin: 0 5px;
-            cursor: pointer;
-        }
-        
-        .filter-btn.active {
-            background: var(--primary-color);
-            color: white;
         }
         
         .product-card {
@@ -84,79 +82,21 @@
             transition: all 0.3s;
             margin-bottom: 20px;
             height: 100%;
+            position: relative;
         }
         
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .product-img {
-            height: 180px;
-            object-fit: contain;
-            padding: 15px;
-            background: #f8f9fa;
-        }
-        
-        .platform-tag {
+        .verification-badge {
             position: absolute;
             top: 10px;
-            right: 10px;
-            background: white;
-            padding: 3px 10px;
-            border-radius: 20px;
+            left: 10px;
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
             font-size: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        .discount-badge {
-            background: #ff4444;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .price {
-            font-weight: 700;
-            color: var(--dark-color);
-            font-size: 1.2rem;
-        }
-        
-        .original-price {
-            text-decoration: line-through;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-        
-        .view-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 15px;
-            width: 100%;
-            transition: all 0.3s;
-        }
-        
-        .view-btn:hover {
-            background: var(--secondary-color);
-            color: white;
-        }
-        
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 50px 0;
-        }
-        
-        footer {
-            background: var(--dark-color);
-            color: white;
-            padding: 3rem 0;
-            margin-top: 3rem;
-        }
+        /* Keep other existing styles... */
     </style>
 </head>
 <body>
@@ -164,7 +104,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="fas fa-search-dollar me-2"></i>PriceCompare
+                <i class="fas fa-first-aid me-2"></i>PriceCompare <small class="text-danger">EMERGENCY MODE</small>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -172,292 +112,236 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="#report">Report Prices</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="#verify">Verify Data</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">How It Works</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link" href="#resources">Emergency Resources</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Emergency Alert Banner -->
+    <div class="container-fluid bg-danger text-white py-2 emergency-alert">
+        <div class="container text-center">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>SYSTEM ALERT:</strong> E-commerce APIs offline. All data is crowdsourced. 
+            <a href="#report" class="text-white fw-bold ms-2">Help by reporting prices in your area →</a>
+        </div>
+    </div>
+
+    <!-- Hero Section - Emergency Version -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">Find the Best Prices Across All Stores</h1>
-            <p class="lead mb-5">Compare prices from Amazon, eBay, Walmart and more to save money on every purchase</p>
+            <h1 class="display-4 fw-bold mb-4">Find Essential Supplies Near You</h1>
+            <p class="lead mb-5">Community-powered price and availability tracking during emergency</p>
             
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="search-box d-flex align-items-center">
-                        <input type="text" class="search-input" placeholder="Search for products...">
+                        <input type="text" class="search-input" placeholder="Search for medicine, water, food...">
                         <button class="search-btn ms-auto">
                             <i class="fas fa-search me-2"></i>Search
                         </button>
                     </div>
                 </div>
             </div>
+            
+            <div class="mt-4">
+                <button class="btn btn-outline-light me-2">
+                    <i class="fas fa-pills me-1"></i>Medication
+                </button>
+                <button class="btn btn-outline-light me-2">
+                    <i class="fas fa-bottle-water me-1"></i>Water
+                </button>
+                <button class="btn btn-outline-light me-2">
+                    <i class="fas fa-bread-slice me-1"></i>Food
+                </button>
+                <button class="btn btn-outline-light">
+                    <i class="fas fa-baby me-1"></i>Baby Supplies
+                </button>
+            </div>
         </div>
     </section>
 
     <!-- Main Content -->
     <div class="container">
-        <!-- Filters -->
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-between align-items-center">
-                <div>
-                    <span class="me-2">Sort by:</span>
-                    <button class="filter-btn active">Lowest Price</button>
-                    <button class="filter-btn">Highest Discount</button>
-                    <button class="filter-btn">Best Rating</button>
+        <!-- Emergency Reporting Section -->
+        <div class="row mb-5" id="report">
+            <div class="col-lg-6">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <i class="fas fa-bullhorn me-2"></i>Report Prices in Your Area
+                    </div>
+                    <div class="card-body">
+                        <form id="emergencyReportForm">
+                            <div class="mb-3">
+                                <label class="form-label">What did you find?</label>
+                                <input type="text" class="form-control" placeholder="Product name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Price</label>
+                                <input type="number" class="form-control" placeholder="0.00" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" placeholder="Store name or address" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Availability</label>
+                                <select class="form-select">
+                                    <option>In Stock</option>
+                                    <option>Low Stock</option>
+                                    <option>Out of Stock</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="fas fa-paper-plane me-1"></i> Submit Report
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div>
-                    <span id="result-count">0 results</span>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <i class="fas fa-sms me-2"></i>Report via SMS/WhatsApp
+                    </div>
+                    <div class="card-body">
+                        <p>Text the following format to <strong>+1 (555) 123-4567</strong>:</p>
+                        <div class="alert alert-light">
+                            <code>PRODUCT, PRICE, LOCATION, STOCK</code>
+                        </div>
+                        <p class="text-muted">Example: <code>Aspirin, 5.99, CVS Main St, In Stock</code></p>
+                        <hr>
+                        <h5><i class="fas fa-qrcode me-2"></i>Quick Report</h5>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SMS:+15551234567?body=PRODUCT,PRICE,LOCATION,STOCK" 
+                             alt="QR Code for SMS reporting" class="img-thumbnail d-block mx-auto">
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" id="loading-spinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-3">Searching across stores...</p>
-        </div>
-        
+
         <!-- Results Grid -->
         <div class="row" id="results-container">
-            <!-- Sample Product Cards (will be populated by JavaScript) -->
+            <!-- Sample Emergency Product Cards -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="product-card">
+                    <span class="verification-badge"><i class="fas fa-check-circle"></i> Verified</span>
                     <div class="position-relative">
-                        <img src="https://via.placeholder.com/300" class="product-img img-fluid w-100" alt="Product">
-                        <span class="platform-tag">Amazon</span>
+                        <img src="https://via.placeholder.com/300?text=Bottled+Water" class="product-img img-fluid w-100" alt="Bottled Water">
+                        <span class="platform-tag">Local Grocery</span>
                     </div>
                     <div class="p-3">
-                        <h5 class="mb-2">Sample Product Name</h5>
+                        <h5 class="mb-2">Bottled Water (24pk)</h5>
                         <div class="d-flex align-items-center mb-2">
-                            <span class="discount-badge me-2">25% OFF</span>
-                            <small class="text-success"><i class="fas fa-check-circle me-1"></i>In Stock</small>
+                            <span class="badge bg-success me-2"><i class="fas fa-check"></i> In Stock</span>
+                            <small class="text-muted">Reported 1h ago</small>
                         </div>
                         <div class="mb-3">
-                            <span class="price">$49.99</span>
-                            <span class="original-price ms-2">$64.99</span>
+                            <span class="price">$4.99</span>
+                            <span class="original-price ms-2">$6.99</span>
                         </div>
-                        <div class="d-flex mb-3">
-                            <div class="me-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <small>4.5 (120)</small>
-                            </div>
-                            <div>
-                                <i class="fas fa-shipping-fast text-primary"></i>
-                                <small>Free</small>
-                            </div>
+                        <div class="mb-3">
+                            <p class="mb-1"><i class="fas fa-map-marker-alt text-danger me-2"></i> <small>Grocery Town, 123 Main St</small></p>
+                            <p class="mb-0"><i class="fas fa-user text-primary me-2"></i> <small>Reported by: Community Volunteer</small></p>
                         </div>
-                        <a href="#" class="view-btn btn btn-sm" target="_blank">
-                            <i class="fas fa-external-link-alt me-1"></i>View Deal
+                        <a href="#" class="view-btn btn btn-sm btn-danger w-100">
+                            <i class="fas fa-map-pin me-1"></i> View on Map
                         </a>
                     </div>
                 </div>
             </div>
             
-            <!-- More sample cards would go here -->
+            <!-- More emergency product cards would go here -->
         </div>
-        
-        <!-- Pagination -->
-        <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
     </div>
 
-    <!-- Footer -->
-    <footer>
+    <!-- Offline Functionality Section -->
+    <div class="container-fluid bg-light py-5 mt-4">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h5 class="mb-3"><i class="fas fa-search-dollar me-2"></i>PriceCompare</h5>
-                    <p>Find the best deals across all major online retailers. Save time and money with our price comparison tool.</p>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="mb-3">Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-white">Home</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">About Us</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">How It Works</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">Contact</a></li>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3><i class="fas fa-wifi-slash me-2"></i> Offline Mode Available</h3>
+                    <p>If you lose internet access, you can still:</p>
+                    <ul>
+                        <li>View recently accessed supply information</li>
+                        <li>Save reports that will sync when back online</li>
+                        <li>Access emergency contact information</li>
                     </ul>
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-download me-1"></i> Install Offline App
+                    </button>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="mb-3">Stores</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-white">Amazon</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">eBay</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">Walmart</a></li>
-                        <li class="mb-2"><a href="#" class="text-white">Best Buy</a></li>
-                    </ul>
+                <div class="col-md-6 text-center">
+                    <img src="https://via.placeholder.com/300?text=Offline+Mode" alt="Offline functionality" class="img-fluid">
                 </div>
-                <div class="col-lg-4 col-md-4 mb-4">
-                    <h5 class="mb-3">Newsletter</h5>
-                    <p>Subscribe to get updates on price drops and special deals.</p>
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Your email">
-                        <button class="btn btn-primary" type="button">Subscribe</button>
-                    </div>
-                </div>
-            </div>
-            <hr class="bg-light">
-            <div class="text-center pt-3">
-                <p class="mb-0">&copy; 2023 PriceCompare. All rights reserved.</p>
             </div>
         </div>
-    </footer>
+    </div>
 
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- Custom JavaScript -->
+    <!-- Enhanced Emergency JavaScript -->
     <script>
         $(document).ready(function() {
-            // Sample search functionality
-            $('.search-btn').click(function() {
-                const query = $('.search-input').val().trim();
-                if (query) {
-                    $('#loading-spinner').show();
-                    $('#results-container').html('');
+            // Check if offline
+            if (!navigator.onLine) {
+                showOfflineAlert();
+            }
+            
+            window.addEventListener('offline', showOfflineAlert);
+            
+            function showOfflineAlert() {
+                const alertHtml = `
+                    <div class="alert alert-warning alert-dismissible fade show fixed-top rounded-0" role="alert">
+                        <strong><i class="fas fa-wifi-slash me-2"></i>You're offline</strong> 
+                        Some features may not be available. Reports will be saved locally.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('body').prepend(alertHtml);
+            }
+            
+            // Emergency form handling
+            $('#emergencyReportForm').submit(function(e) {
+                e.preventDefault();
+                
+                if (!navigator.onLine) {
+                    // Save to localStorage if offline
+                    const reports = JSON.parse(localStorage.getItem('pendingReports') || [];
+                    reports.push({
+                        product: $(this).find('input[type="text"]').val(),
+                        price: $(this).find('input[type="number"]').val(),
+                        location: $(this).find('input[type="text"]').val(),
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('pendingReports', JSON.stringify(reports));
                     
-                    // Simulate API call delay
-                    setTimeout(function() {
-                        // In a real app, this would be an AJAX call to your backend
-                        simulateSearchResults(query);
-                        $('#loading-spinner').hide();
-                    }, 1500);
+                    alert('Report saved locally and will submit when back online');
+                } else {
+                    // Simulate API submission
+                    alert('Thank you for your emergency report! This information could help save lives.');
+                }
+                
+                $(this).trigger('reset');
+            });
+            
+            // Load any pending reports when back online
+            window.addEventListener('online', function() {
+                const pendingReports = JSON.parse(localStorage.getItem('pendingReports'));
+                if (pendingReports && pendingReports.length > 0) {
+                    // In a real app, this would submit to your backend
+                    alert(`Submitting ${pendingReports.length} saved reports`);
+                    localStorage.removeItem('pendingReports');
                 }
             });
-            
-            // Filter button active state
-            $('.filter-btn').click(function() {
-                $('.filter-btn').removeClass('active');
-                $(this).addClass('active');
-                // In a real app, you would re-sort the results here
-            });
-            
-            // Sample function to simulate search results
-            function simulateSearchResults(query) {
-                // This is just for demonstration - in a real app you would get this from your backend
-                const sampleResults = [
-                    {
-                        name: `${query} (Latest Model)`,
-                        price: 49.99,
-                        originalPrice: 64.99,
-                        discount: 25,
-                        platform: 'Amazon',
-                        rating: 4.5,
-                        reviews: 120,
-                        image: 'https://via.placeholder.com/300',
-                        url: 'https://www.amazon.com'
-                    },
-                    {
-                        name: `Premium ${query} Pro`,
-                        price: 59.99,
-                        originalPrice: 59.99,
-                        discount: 0,
-                        platform: 'Walmart',
-                        rating: 4.2,
-                        reviews: 85,
-                        image: 'https://via.placeholder.com/300',
-                        url: 'https://www.walmart.com'
-                    },
-                    {
-                        name: `${query} with Extra Features`,
-                        price: 45.99,
-                        originalPrice: 69.99,
-                        discount: 35,
-                        platform: 'eBay',
-                        rating: 4.7,
-                        reviews: 210,
-                        image: 'https://via.placeholder.com/300',
-                        url: 'https://www.ebay.com'
-                    },
-                    {
-                        name: `Budget ${query} Basic`,
-                        price: 29.99,
-                        originalPrice: 39.99,
-                        discount: 25,
-                        platform: 'Best Buy',
-                        rating: 3.9,
-                        reviews: 45,
-                        image: 'https://via.placeholder.com/300',
-                        url: 'https://www.bestbuy.com'
-                    }
-                ];
-                
-                // Update result count
-                $('#result-count').text(`${sampleResults.length} results for "${query}"`);
-                
-                // Generate product cards
-                sampleResults.forEach(product => {
-                    const discountBadge = product.discount > 0 ? 
-                        `<span class="discount-badge me-2">${product.discount}% OFF</span>` : '';
-                    
-                    const originalPrice = product.discount > 0 ? 
-                        `<span class="original-price ms-2">$${product.originalPrice.toFixed(2)}</span>` : '';
-                    
-                    const productCard = `
-                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                            <div class="product-card">
-                                <div class="position-relative">
-                                    <img src="${product.image}" class="product-img img-fluid w-100" alt="${product.name}">
-                                    <span class="platform-tag">${product.platform}</span>
-                                </div>
-                                <div class="p-3">
-                                    <h5 class="mb-2">${product.name}</h5>
-                                    <div class="d-flex align-items-center mb-2">
-                                        ${discountBadge}
-                                        <small class="text-success"><i class="fas fa-check-circle me-1"></i>In Stock</small>
-                                    </div>
-                                    <div class="mb-3">
-                                        <span class="price">$${product.price.toFixed(2)}</span>
-                                        ${originalPrice}
-                                    </div>
-                                    <div class="d-flex mb-3">
-                                        <div class="me-2">
-                                            <i class="fas fa-star text-warning"></i>
-                                            <small>${product.rating} (${product.reviews})</small>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-shipping-fast text-primary"></i>
-                                            <small>Free</small>
-                                        </div>
-                                    </div>
-                                    <a href="${product.url}" class="view-btn btn btn-sm" target="_blank">
-                                        <i class="fas fa-external-link-alt me-1"></i>View Deal
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    $('#results-container').append(productCard);
-                });
-            }
         });
     </script>
 </body>
