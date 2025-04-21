@@ -160,10 +160,10 @@
         .jiomart { color: #1A73E8; }
         .swiggy { color: #FC8019; }
         
-        /* Scraping status */
-        .scraping-status {
+        /* Status messages */
+        .status-card {
             padding: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-radius: 5px;
             background: #f8f9fa;
         }
@@ -172,6 +172,9 @@
         }
         .status-error {
             border-left: 4px solid #dc3545;
+        }
+        .status-warning {
+            border-left: 4px solid #ffc107;
         }
     </style>
 </head>
@@ -191,13 +194,10 @@
                         <a class="nav-link active" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#platforms">Platforms</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#how-it-works">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
+                        <a class="nav-link" href="#setup-guide">Setup Guide</a>
                     </li>
                 </ul>
             </div>
@@ -208,7 +208,7 @@
     <section class="hero-section">
         <div class="container text-center">
             <h1 class="display-4 fw-bold mb-4">Real-Time Price Comparison</h1>
-            <p class="lead mb-5">Get live prices from Amazon, Flipkart, and more - no APIs needed</p>
+            <p class="lead mb-5">Get live prices from Indian e-commerce sites</p>
             
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -222,81 +222,32 @@
             </div>
             
             <div class="mt-4">
-                <span class="text-white-50 me-2">Popular:</span>
-                <button class="btn btn-sm btn-outline-light me-2" data-search="iPhone 15">iPhone 15</button>
-                <button class="btn btn-sm btn-outline-light me-2" data-search="Air Conditioner">AC</button>
-                <button class="btn btn-sm btn-outline-light" data-search="Samsung TV">Samsung TV</button>
+                <button class="btn btn-sm btn-outline-light me-2" data-search="iPhone 15">
+                    <i class="fas fa-mobile-alt me-1"></i>iPhone 15
+                </button>
+                <button class="btn btn-sm btn-outline-light me-2" data-search="Air Conditioner">
+                    <i class="fas fa-snowflake me-1"></i>AC
+                </button>
+                <button class="btn btn-sm btn-outline-light" data-search="Samsung TV">
+                    <i class="fas fa-tv me-1"></i>Samsung TV
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Platform Logos -->
-    <div class="container py-4" id="platforms">
-        <div class="row g-3 justify-content-center">
-            <div class="col-auto">
-                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
-                    <img src="https://logo.clearbit.com/amazon.in" alt="Amazon" class="platform-logo">
-                    <span class="amazon fw-bold">Amazon</span>
-                </div>
-            </div>
-            <div class="col-auto">
-                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
-                    <img src="https://logo.clearbit.com/flipkart.com" alt="Flipkart" class="platform-logo">
-                    <span class="flipkart fw-bold">Flipkart</span>
-                </div>
-            </div>
-            <div class="col-auto">
-                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
-                    <img src="https://logo.clearbit.com/meesho.com" alt="Meesho" class="platform-logo">
-                    <span class="meesho fw-bold">Meesho</span>
-                </div>
-            </div>
-            <div class="col-auto">
-                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
-                    <img src="https://logo.clearbit.com/jiomart.com" alt="JioMart" class="platform-logo">
-                    <span class="jiomart fw-bold">JioMart</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div class="container">
-        <!-- Scraping Status -->
+        <!-- Status Messages -->
         <div id="scrapingStatus"></div>
         
-        <!-- Filters -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                    <span class="me-2">Sort by:</span>
-                    <select class="form-select form-select-sm" id="sortBy" style="width: auto;">
-                        <option value="price-asc" selected>Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                        <option value="discount">Highest Discount</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <div class="form-check form-switch d-inline-block me-3">
-                    <input class="form-check-input" type="checkbox" id="inStockToggle" checked>
-                    <label class="form-check-label" for="inStockToggle">In Stock Only</label>
-                </div>
-                <span id="result-count" class="text-muted">0 results</span>
-            </div>
-        </div>
-        
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" id="loading-spinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-3">Scraping live data from stores...</p>
-        </div>
-        
-        <!-- Results Grid -->
+        <!-- Results Container -->
         <div class="row" id="results-container">
-            <!-- Results will appear here -->
+            <!-- Default message before search -->
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>Search for products to compare prices</h4>
+                <p class="text-muted">Results will appear here from Flipkart, Amazon, and other platforms</p>
+            </div>
         </div>
     </div>
 
@@ -308,10 +259,19 @@
                 <div class="col-md-4">
                     <div class="text-center p-4">
                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
-                            <i class="fas fa-bolt fa-2x"></i>
+                            <i class="fas fa-server fa-2x"></i>
                         </div>
-                        <h4>1. Live Scraping</h4>
-                        <p>We fetch real-time prices directly from retailer websites, no delayed API data.</p>
+                        <h4>1. Local Proxy</h4>
+                        <p>Runs a small Node.js server on your machine to bypass CORS restrictions.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-code-branch fa-2x"></i>
+                        </div>
+                        <h4>2. Real-Time Scraping</h4>
+                        <p>Fetches live product data directly from e-commerce websites.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -319,56 +279,84 @@
                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
                             <i class="fas fa-shield-alt fa-2x"></i>
                         </div>
-                        <h4>2. No APIs Needed</h4>
-                        <p>Works even when official APIs are down or unavailable.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="text-center p-4">
-                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
-                            <i class="fas fa-lock fa-2x"></i>
-                        </div>
-                        <h4>3. Client-Side Only</h4>
-                        <p>All scraping happens in your browser for privacy.</p>
+                        <h4>3. Privacy Focused</h4>
+                        <p>All processing happens on your device - no data sent to external servers.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Setup Guide -->
+    <section class="py-5" id="setup-guide">
+        <div class="container">
+            <h2 class="text-center mb-5">Setup Guide</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-server me-2"></i>Local Proxy Setup</h5>
+                    <ol>
+                        <li>Create a new file called <code>proxy-server.js</code></li>
+                        <li>Paste this code:
+                            <pre><code>
+const express = require('express');
+const axios = require('axios');
+const cheerio = require('cheerio');
+
+const app = express();
+app.get('/scrape', async (req, res) => {
+  const { platform, query } = req.query;
+  const url = {
+    'flipkart': `https://www.flipkart.com/search?q=${query}`,
+    'amazon': `https://www.amazon.in/s?k=${query}`
+  }[platform];
+
+  try {
+    const { data } = await axios.get(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    });
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.listen(3000, () => console.log('Proxy server running on port 3000'));
+                            </code></pre>
+                        </li>
+                        <li>Run these commands in terminal:
+                            <pre><code>
+npm install express axios cheerio
+node proxy-server.js
+                            </code></pre>
+                        </li>
+                        <li>Keep this running while using the website</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer id="contact">
+    <footer>
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h5 class="mb-3"><i class="fas fa-search-dollar me-2"></i>PricePulse</h5>
-                    <p>Real-time price comparison without relying on APIs. Get the most current prices directly from retailer websites.</p>
-                    <div class="mt-3">
-                        <a href="#" class="text-white me-3"><i class="fab fa-github"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                <div class="col-md-6">
+                    <h5><i class="fas fa-info-circle me-2"></i>Important Note</h5>
+                    <div class="alert alert-dark bg-dark text-white">
+                        This tool is for educational purposes only. E-commerce sites may block scrapers - use responsibly.
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <h5 class="mb-3">Supported Platforms</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fab fa-amazon me-2 amazon"></i> Amazon India</li>
-                        <li class="mb-2"><i class="fas fa-shopping-bag me-2 flipkart"></i> Flipkart</li>
-                        <li class="mb-2"><i class="fas fa-store me-2 meesho"></i> Meesho</li>
-                        <li class="mb-2"><i class="fas fa-mobile-alt me-2 jiomart"></i> JioMart</li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <h5 class="mb-3">Important Note</h5>
-                    <div class="alert alert-warning bg-dark border-warning text-white">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        This demo uses CORS proxies which may be rate-limited. For production use, consider setting up your own proxy server.
-                    </div>
+                <div class="col-md-6">
+                    <h5><i class="fas fa-code me-2"></i>Source Code</h5>
+                    <p>Full project available on GitHub:</p>
+                    <a href="https://github.com/yourusername/price-comparison" class="btn btn-outline-light">
+                        <i class="fab fa-github me-2"></i>View on GitHub
+                    </a>
                 </div>
             </div>
             <hr class="bg-light">
             <div class="text-center pt-3">
-                <p class="mb-0">&copy; 2023 PricePulse. Educational demo only.</p>
+                <p class="mb-0">&copy; 2023 PricePulse - Educational Demo</p>
             </div>
         </div>
     </footer>
@@ -377,7 +365,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- Scraping Script -->
+    <!-- Main Script -->
     <script>
         $(document).ready(function() {
             // Quick search buttons
@@ -402,16 +390,24 @@
             });
             
             function triggerSearch(query) {
-                $('#loading-spinner').show();
-                $('#results-container').empty();
+                $('#results-container').html(`
+                    <div class="col-12 text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3">Searching for "${query}"...</p>
+                    </div>
+                `);
+                
                 $('#scrapingStatus').empty();
-                $('#result-count').text('0 results');
                 
                 // Scrape platforms sequentially
                 scrapePlatforms(query, ['flipkart', 'amazon']);
             }
             
             async function scrapePlatforms(query, platforms) {
+                const allResults = [];
+                
                 for (const platform of platforms) {
                     try {
                         addStatus(`Starting ${platform} scrape...`, 'info');
@@ -420,76 +416,128 @@
                             scrapeFlipkart(query) : 
                             scrapeAmazon(query));
                         
-                        addStatus(`Found ${data.length} ${platform} results`, 'success');
-                        displayResults(data, platform);
+                        if (data.length > 0) {
+                            addStatus(`Found ${data.length} ${platform} results`, 'success');
+                            allResults.push(...data);
+                            displayResults(data);
+                        } else {
+                            addStatus(`No results found on ${platform}`, 'warning');
+                        }
                         
                     } catch (error) {
                         addStatus(`${platform} error: ${error.message}`, 'error');
+                        // Show mock data when scraping fails
+                        const mockData = generateMockData(query, platform);
+                        allResults.push(...mockData);
+                        displayResults(mockData);
                     }
                     
                     // Add delay between scrapes
                     await delay(2000);
                 }
                 
-                $('#loading-spinner').hide();
-                updateResultCount();
+                if (allResults.length === 0) {
+                    $('#results-container').html(`
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4>No results found</h4>
+                            <p class="text-muted">Try a different search term or check your proxy server</p>
+                        </div>
+                    `);
+                }
             }
             
             // Flipkart Scraper
             async function scrapeFlipkart(product) {
-                const url = `https://www.flipkart.com/search?q=${encodeURIComponent(product)}`;
-                const proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
-                
-                const response = await fetch(proxyUrl, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                
-                if (!response.ok) throw new Error('Failed to fetch Flipkart');
-                
-                const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const items = doc.querySelectorAll('div[data-id]');
-                
-                return Array.from(items).map(item => ({
-                    name: item.querySelector('a[title]')?.title || item.querySelector('div._4rR01T')?.textContent || 'No title',
-                    price: item.querySelector('div._30jeq3')?.textContent || 'Price not found',
-                    originalPrice: item.querySelector('div._3I9_wc')?.textContent || '',
-                    url: 'https://www.flipkart.com' + (item.querySelector('a[href]')?.getAttribute('href') || '#'),
-                    platform: 'Flipkart',
-                    platformClass: 'flipkart',
-                    inStock: true,
-                    image: item.querySelector('img._396cs4')?.src || 'https://via.placeholder.com/150'
-                })).slice(0, 5);
+                try {
+                    const proxyUrl = `http://localhost:3000/scrape?platform=flipkart&query=${encodeURIComponent(product)}`;
+                    
+                    const response = await fetch(proxyUrl);
+                    if (!response.ok) throw new Error('Proxy server not responding');
+                    
+                    const { data, error } = await response.json();
+                    if (error) throw new Error(error);
+                    
+                    // Parse the HTML (simplified example)
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const items = doc.querySelectorAll('div[data-id]');
+                    
+                    return Array.from(items).map(item => ({
+                        name: item.querySelector('a[title]')?.title || item.querySelector('div._4rR01T')?.textContent || 'Product',
+                        price: item.querySelector('div._30jeq3')?.textContent || '₹---',
+                        originalPrice: item.querySelector('div._3I9_wc')?.textContent || '',
+                        url: 'https://www.flipkart.com' + (item.querySelector('a[href]')?.getAttribute('href') || '#'),
+                        platform: 'Flipkart',
+                        platformClass: 'flipkart',
+                        inStock: true,
+                        image: item.querySelector('img._396cs4')?.src || 'https://via.placeholder.com/150'
+                    })).slice(0, 5);
+                    
+                } catch (error) {
+                    console.error("Flipkart scrape failed:", error);
+                    throw error;
+                }
             }
             
             // Amazon Scraper
             async function scrapeAmazon(product) {
-                const url = `https://www.amazon.in/s?k=${encodeURIComponent(product)}`;
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-                
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error('Failed to fetch Amazon');
-                
-                const { contents } = await response.json();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(contents, 'text/html');
-                const items = doc.querySelectorAll('.s-result-item');
-                
-                return Array.from(items).map(item => ({
-                    name: item.querySelector('h2 a span')?.textContent || 'No title',
-                    price: item.querySelector('.a-price .a-offscreen')?.textContent || 'Price not found',
-                    originalPrice: item.querySelector('.a-price[data-a-strike="true"] .a-offscreen')?.textContent || '',
-                    url: 'https://www.amazon.in' + (item.querySelector('h2 a')?.getAttribute('href') || '#'),
-                    platform: 'Amazon',
-                    platformClass: 'amazon',
-                    inStock: !!item.querySelector('.a-color-success'),
-                    image: item.querySelector('img.s-image')?.src || 'https://via.placeholder.com/150'
-                })).filter(item => item.name !== 'No title').slice(0, 5);
+                try {
+                    const proxyUrl = `http://localhost:3000/scrape?platform=amazon&query=${encodeURIComponent(product)}`;
+                    
+                    const response = await fetch(proxyUrl);
+                    if (!response.ok) throw new Error('Proxy server not responding');
+                    
+                    const { data, error } = await response.json();
+                    if (error) throw new Error(error);
+                    
+                    // Parse the HTML
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const items = doc.querySelectorAll('.s-result-item');
+                    
+                    return Array.from(items).map(item => ({
+                        name: item.querySelector('h2 a span')?.textContent || 'Product',
+                        price: item.querySelector('.a-price .a-offscreen')?.textContent || '₹---',
+                        originalPrice: item.querySelector('.a-price[data-a-strike="true"] .a-offscreen')?.textContent || '',
+                        url: 'https://www.amazon.in' + (item.querySelector('h2 a')?.getAttribute('href') || '#'),
+                        platform: 'Amazon',
+                        platformClass: 'amazon',
+                        inStock: !!item.querySelector('.a-color-success'),
+                        image: item.querySelector('img.s-image')?.src || 'https://via.placeholder.com/150'
+                    })).filter(item => item.name !== 'Product').slice(0, 5);
+                    
+                } catch (error) {
+                    console.error("Amazon scrape failed:", error);
+                    throw error;
+                }
             }
             
-            function displayResults(data, platform) {
+            // Generate mock data when scraping fails
+            function generateMockData(query, platform) {
+                const mockPrice = (Math.random() * 10000 + 500).toFixed(2);
+                const mockOriginalPrice = (parseFloat(mockPrice) * 1.3).toFixed(2);
+                
+                return [{
+                    name: `${query} (Mock ${platform} Result)`,
+                    price: `₹${mockPrice}`,
+                    originalPrice: `₹${mockOriginalPrice}`,
+                    url: `https://www.${platform.toLowerCase()}.com`,
+                    platform: platform,
+                    platformClass: platform.toLowerCase(),
+                    inStock: Math.random() > 0.3,
+                    image: `https://via.placeholder.com/150?text=${query}`
+                }];
+            }
+            
+            // Display results
+            function displayResults(data) {
                 const container = $('#results-container');
+                
+                // If this is the first set of results, clear the loading message
+                if (container.find('.col-12.text-center').length) {
+                    container.empty();
+                }
                 
                 data.forEach(item => {
                     const discount = calculateDiscount(item.price, item.originalPrice);
@@ -528,6 +576,7 @@
                 });
             }
             
+            // Helper functions
             function calculateDiscount(currentPrice, originalPrice) {
                 if (!originalPrice || !currentPrice) return 0;
                 
@@ -542,20 +591,26 @@
             }
             
             function addStatus(message, type) {
-                const statusDiv = $('#scrapingStatus');
-                const statusClass = type === 'error' ? 'status-error' : 'status-success';
+                const icon = {
+                    'info': 'fa-info-circle',
+                    'success': 'fa-check-circle',
+                    'error': 'fa-times-circle',
+                    'warning': 'fa-exclamation-triangle'
+                }[type];
                 
-                statusDiv.append(`
-                    <div class="scraping-status ${statusClass}">
-                        <i class="fas ${type === 'error' ? 'fa-times-circle text-danger' : 'fa-check-circle text-success'} me-2"></i>
+                const color = {
+                    'info': 'text-info',
+                    'success': 'text-success',
+                    'error': 'text-danger',
+                    'warning': 'text-warning'
+                }[type];
+                
+                $('#scrapingStatus').append(`
+                    <div class="status-card status-${type}">
+                        <i class="fas ${icon} ${color} me-2"></i>
                         ${message}
                     </div>
                 `);
-            }
-            
-            function updateResultCount() {
-                const count = $('#results-container .product-card').length;
-                $('#result-count').text(`${count} results`);
             }
             
             function delay(ms) {
