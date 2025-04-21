@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PriceCompare - Emergency Mode</title>
+    <title>PricePulse - Compare Prices Across All Platforms</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
+            --primary-color: #6c63ff;
+            --secondary-color: #5649e6;
             --accent-color: #4cc9f0;
             --light-color: #f8f9fa;
             --dark-color: #212529;
-            --emergency-color: #dc3545;
         }
         
         body {
@@ -27,22 +26,11 @@
         }
         
         .hero-section {
-            background: linear-gradient(135deg, var(--emergency-color), #c82333);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             padding: 4rem 0;
             border-radius: 0 0 20px 20px;
             margin-bottom: 2rem;
-        }
-        
-        .emergency-alert {
-            animation: pulse 2s infinite;
-            border-left: 5px solid var(--emergency-color);
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
         }
         
         .search-box {
@@ -60,7 +48,7 @@
         }
         
         .search-btn {
-            background: var(--emergency-color);
+            background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 50px;
@@ -70,8 +58,15 @@
         }
         
         .search-btn:hover {
-            background: #c82333;
+            background: var(--secondary-color);
             transform: translateY(-2px);
+        }
+        
+        .platform-logo {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+            margin-right: 10px;
         }
         
         .product-card {
@@ -82,29 +77,96 @@
             transition: all 0.3s;
             margin-bottom: 20px;
             height: 100%;
-            position: relative;
         }
         
-        .verification-badge {
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-img {
+            height: 180px;
+            object-fit: contain;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+        
+        .platform-tag {
             position: absolute;
             top: 10px;
-            left: 10px;
-            background: #28a745;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
+            right: 10px;
+            background: white;
+            padding: 3px 10px;
+            border-radius: 20px;
             font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
         }
         
-        /* Keep other existing styles... */
+        .discount-badge {
+            background: #ff4444;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .price {
+            font-weight: 700;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .view-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .view-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 50px 0;
+        }
+        
+        footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+        
+        /* Platform-specific colors */
+        .amazon { color: #FF9900; }
+        .flipkart { color: #047BD5; }
+        .meesho { color: #F43397; }
+        .jiomart { color: #1A73E8; }
+        .swiggy { color: #FC8019; }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="fas fa-first-aid me-2"></i>PriceCompare <small class="text-danger">EMERGENCY MODE</small>
+                <i class="fas fa-search-dollar me-2"></i>PricePulse
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -112,38 +174,32 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#report">Report Prices</a>
+                        <a class="nav-link active" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#verify">Verify Data</a>
+                        <a class="nav-link" href="#platforms">Platforms</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#resources">Emergency Resources</a>
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Emergency Alert Banner -->
-    <div class="container-fluid bg-danger text-white py-2 emergency-alert">
-        <div class="container text-center">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <strong>SYSTEM ALERT:</strong> E-commerce APIs offline. All data is crowdsourced. 
-            <a href="#report" class="text-white fw-bold ms-2">Help by reporting prices in your area →</a>
-        </div>
-    </div>
-
-    <!-- Hero Section - Emergency Version -->
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">Find Essential Supplies Near You</h1>
-            <p class="lead mb-5">Community-powered price and availability tracking during emergency</p>
+            <h1 class="display-4 fw-bold mb-4">Compare Prices Across All Indian Platforms</h1>
+            <p class="lead mb-5">Find the best deals on Amazon, Flipkart, Meesho, JioMart, Swiggy, and more in one click</p>
             
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="search-box d-flex align-items-center">
-                        <input type="text" class="search-input" placeholder="Search for medicine, water, food...">
+                        <input type="text" class="search-input" placeholder="Search for products, groceries, food...">
                         <button class="search-btn ms-auto">
                             <i class="fas fa-search me-2"></i>Search
                         </button>
@@ -152,196 +208,360 @@
             </div>
             
             <div class="mt-4">
-                <button class="btn btn-outline-light me-2">
-                    <i class="fas fa-pills me-1"></i>Medication
-                </button>
-                <button class="btn btn-outline-light me-2">
-                    <i class="fas fa-bottle-water me-1"></i>Water
-                </button>
-                <button class="btn btn-outline-light me-2">
-                    <i class="fas fa-bread-slice me-1"></i>Food
-                </button>
-                <button class="btn btn-outline-light">
-                    <i class="fas fa-baby me-1"></i>Baby Supplies
-                </button>
+                <span class="text-white-50 me-2">Popular:</span>
+                <button class="btn btn-sm btn-outline-light me-2">iPhone 15</button>
+                <button class="btn btn-sm btn-outline-light me-2">Groceries</button>
+                <button class="btn btn-sm btn-outline-light me-2">Restaurants</button>
+                <button class="btn btn-sm btn-outline-light">Fashion</button>
             </div>
         </div>
     </section>
 
+    <!-- Platform Logos -->
+    <div class="container py-4" id="platforms">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
+                    <img src="https://logo.clearbit.com/amazon.in" alt="Amazon" class="platform-logo">
+                    <span class="amazon fw-bold">Amazon</span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
+                    <img src="https://logo.clearbit.com/flipkart.com" alt="Flipkart" class="platform-logo">
+                    <span class="flipkart fw-bold">Flipkart</span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
+                    <img src="https://logo.clearbit.com/meesho.com" alt="Meesho" class="platform-logo">
+                    <span class="meesho fw-bold">Meesho</span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
+                    <img src="https://logo.clearbit.com/jiomart.com" alt="JioMart" class="platform-logo">
+                    <span class="jiomart fw-bold">JioMart</span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="platform-icon p-3 rounded-3 shadow-sm bg-white">
+                    <img src="https://logo.clearbit.com/swiggy.com" alt="Swiggy" class="platform-logo">
+                    <span class="swiggy fw-bold">Swiggy</span>
+                </div>
+            </div>
+            <!-- Add more platforms as needed -->
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="container">
-        <!-- Emergency Reporting Section -->
-        <div class="row mb-5" id="report">
-            <div class="col-lg-6">
-                <div class="card border-danger">
-                    <div class="card-header bg-danger text-white">
-                        <i class="fas fa-bullhorn me-2"></i>Report Prices in Your Area
-                    </div>
-                    <div class="card-body">
-                        <form id="emergencyReportForm">
-                            <div class="mb-3">
-                                <label class="form-label">What did you find?</label>
-                                <input type="text" class="form-control" placeholder="Product name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Price</label>
-                                <input type="number" class="form-control" placeholder="0.00" step="0.01" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Location</label>
-                                <input type="text" class="form-control" placeholder="Store name or address" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Availability</label>
-                                <select class="form-select">
-                                    <option>In Stock</option>
-                                    <option>Low Stock</option>
-                                    <option>Out of Stock</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-danger w-100">
-                                <i class="fas fa-paper-plane me-1"></i> Submit Report
-                            </button>
-                        </form>
-                    </div>
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                    <span class="me-2">Sort by:</span>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option selected>Lowest Price</option>
+                        <option>Highest Discount</option>
+                        <option>Best Rating</option>
+                        <option>Fastest Delivery</option>
+                    </select>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="card border-primary">
-                    <div class="card-header bg-primary text-white">
-                        <i class="fas fa-sms me-2"></i>Report via SMS/WhatsApp
-                    </div>
-                    <div class="card-body">
-                        <p>Text the following format to <strong>+1 (555) 123-4567</strong>:</p>
-                        <div class="alert alert-light">
-                            <code>PRODUCT, PRICE, LOCATION, STOCK</code>
-                        </div>
-                        <p class="text-muted">Example: <code>Aspirin, 5.99, CVS Main St, In Stock</code></p>
-                        <hr>
-                        <h5><i class="fas fa-qrcode me-2"></i>Quick Report</h5>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SMS:+15551234567?body=PRODUCT,PRICE,LOCATION,STOCK" 
-                             alt="QR Code for SMS reporting" class="img-thumbnail d-block mx-auto">
-                    </div>
+            <div class="col-md-6 text-md-end">
+                <div class="form-check form-switch d-inline-block me-3">
+                    <input class="form-check-input" type="checkbox" id="inStockToggle" checked>
+                    <label class="form-check-label" for="inStockToggle">In Stock Only</label>
                 </div>
+                <span id="result-count" class="text-muted">0 results</span>
             </div>
         </div>
-
+        
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Searching across all platforms...</p>
+        </div>
+        
         <!-- Results Grid -->
         <div class="row" id="results-container">
-            <!-- Sample Emergency Product Cards -->
+            <!-- Sample Product Cards (will be populated by JavaScript) -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="product-card">
-                    <span class="verification-badge"><i class="fas fa-check-circle"></i> Verified</span>
                     <div class="position-relative">
-                        <img src="https://via.placeholder.com/300?text=Bottled+Water" class="product-img img-fluid w-100" alt="Bottled Water">
-                        <span class="platform-tag">Local Grocery</span>
+                        <img src="https://via.placeholder.com/300" class="product-img img-fluid w-100" alt="Product">
+                        <span class="platform-tag">
+                            <img src="https://logo.clearbit.com/amazon.in" alt="Amazon" height="16" class="me-1">
+                            Amazon
+                        </span>
                     </div>
                     <div class="p-3">
-                        <h5 class="mb-2">Bottled Water (24pk)</h5>
+                        <h5 class="mb-2">OnePlus Nord CE 3 Lite 5G</h5>
                         <div class="d-flex align-items-center mb-2">
-                            <span class="badge bg-success me-2"><i class="fas fa-check"></i> In Stock</span>
-                            <small class="text-muted">Reported 1h ago</small>
+                            <span class="discount-badge me-2">25% OFF</span>
+                            <small class="text-success"><i class="fas fa-check-circle me-1"></i>In Stock</small>
                         </div>
                         <div class="mb-3">
-                            <span class="price">$4.99</span>
-                            <span class="original-price ms-2">$6.99</span>
+                            <span class="price">₹18,999</span>
+                            <span class="original-price ms-2">₹24,999</span>
                         </div>
-                        <div class="mb-3">
-                            <p class="mb-1"><i class="fas fa-map-marker-alt text-danger me-2"></i> <small>Grocery Town, 123 Main St</small></p>
-                            <p class="mb-0"><i class="fas fa-user text-primary me-2"></i> <small>Reported by: Community Volunteer</small></p>
+                        <div class="d-flex mb-3">
+                            <div class="me-2">
+                                <i class="fas fa-star text-warning"></i>
+                                <small>4.5 (1,240)</small>
+                            </div>
+                            <div>
+                                <i class="fas fa-shipping-fast text-primary"></i>
+                                <small>Free Delivery</small>
+                            </div>
                         </div>
-                        <a href="#" class="view-btn btn btn-sm btn-danger w-100">
-                            <i class="fas fa-map-pin me-1"></i> View on Map
+                        <a href="https://www.amazon.in" class="view-btn btn btn-sm" target="_blank">
+                            <i class="fas fa-external-link-alt me-1"></i>View on Amazon
                         </a>
                     </div>
                 </div>
             </div>
             
-            <!-- More emergency product cards would go here -->
+            <!-- More sample cards would go here for other platforms -->
         </div>
+        
+        <!-- Pagination -->
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
-    <!-- Offline Functionality Section -->
-    <div class="container-fluid bg-light py-5 mt-4">
+    <!-- How It Works Section -->
+    <section class="bg-light py-5 mt-5" id="how-it-works">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h3><i class="fas fa-wifi-slash me-2"></i> Offline Mode Available</h3>
-                    <p>If you lose internet access, you can still:</p>
-                    <ul>
-                        <li>View recently accessed supply information</li>
-                        <li>Save reports that will sync when back online</li>
-                        <li>Access emergency contact information</li>
-                    </ul>
-                    <button class="btn btn-outline-primary">
-                        <i class="fas fa-download me-1"></i> Install Offline App
-                    </button>
+            <h2 class="text-center mb-5">How PricePulse Works</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-search fa-2x"></i>
+                        </div>
+                        <h4>1. Search</h4>
+                        <p>Enter what you're looking for - from electronics to groceries to food delivery.</p>
+                    </div>
                 </div>
-                <div class="col-md-6 text-center">
-                    <img src="https://via.placeholder.com/300?text=Offline+Mode" alt="Offline functionality" class="img-fluid">
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-exchange-alt fa-2x"></i>
+                        </div>
+                        <h4>2. Compare</h4>
+                        <p>See prices from all major Indian platforms side-by-side in one view.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-external-link-alt fa-2x"></i>
+                        </div>
+                        <h4>3. Save</h4>
+                        <p>Click through to your preferred platform to complete your purchase.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3"><i class="fas fa-search-dollar me-2"></i>PricePulse</h5>
+                    <p>Your one-stop solution for comparing prices across all major Indian e-commerce platforms, grocery delivery, and food services.</p>
+                    <div class="mt-3">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white">Home</a></li>
+                        <li class="mb-2"><a href="#platforms" class="text-white">Platforms</a></li>
+                        <li class="mb-2"><a href="#how-it-works" class="text-white">How It Works</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-3">Platforms</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white">Amazon</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Flipkart</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Meesho</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">JioMart</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Swiggy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4 mb-4">
+                    <h5 class="mb-3">Contact Us</h5>
+                    <p><i class="fas fa-envelope me-2"></i> support@pricepulse.in</p>
+                    <p><i class="fas fa-phone me-2"></i> +91 98765 43210</p>
+                    <div class="input-group mb-3 mt-4">
+                        <input type="email" class="form-control" placeholder="Your email">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="text-center pt-3">
+                <p class="mb-0">&copy; 2023 PricePulse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- Enhanced Emergency JavaScript -->
+    <!-- Custom JavaScript -->
     <script>
         $(document).ready(function() {
-            // Check if offline
-            if (!navigator.onLine) {
-                showOfflineAlert();
-            }
+            // Sample platform data
+            const platforms = [
+                { name: "Amazon", logo: "https://logo.clearbit.com/amazon.in", class: "amazon" },
+                { name: "Flipkart", logo: "https://logo.clearbit.com/flipkart.com", class: "flipkart" },
+                { name: "Meesho", logo: "https://logo.clearbit.com/meesho.com", class: "meesho" },
+                { name: "JioMart", logo: "https://logo.clearbit.com/jiomart.com", class: "jiomart" },
+                { name: "Swiggy", logo: "https://logo.clearbit.com/swiggy.com", class: "swiggy" },
+                { name: "Zomato", logo: "https://logo.clearbit.com/zomato.com", class: "text-danger" },
+                { name: "BigBasket", logo: "https://logo.clearbit.com/bigbasket.com", class: "text-success" },
+                { name: "Myntra", logo: "https://logo.clearbit.com/myntra.com", class: "text-info" }
+            ];
             
-            window.addEventListener('offline', showOfflineAlert);
+            // Search functionality
+            $('.search-btn, .search-input').on('keypress', function(e) {
+                if (e.which === 13 || $(this).hasClass('search-btn')) {
+                    const query = $('.search-input').val().trim();
+                    if (query) {
+                        performSearch(query);
+                    }
+                }
+            });
             
-            function showOfflineAlert() {
-                const alertHtml = `
-                    <div class="alert alert-warning alert-dismissible fade show fixed-top rounded-0" role="alert">
-                        <strong><i class="fas fa-wifi-slash me-2"></i>You're offline</strong> 
-                        Some features may not be available. Reports will be saved locally.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                $('body').prepend(alertHtml);
-            }
+            // Quick search buttons
+            $('.btn-outline-light').click(function() {
+                const query = $(this).text().trim();
+                $('.search-input').val(query);
+                performSearch(query);
+            });
             
-            // Emergency form handling
-            $('#emergencyReportForm').submit(function(e) {
-                e.preventDefault();
+            function performSearch(query) {
+                $('#loading-spinner').show();
+                $('#results-container').html('');
                 
-                if (!navigator.onLine) {
-                    // Save to localStorage if offline
-                    const reports = JSON.parse(localStorage.getItem('pendingReports') || [];
-                    reports.push({
-                        product: $(this).find('input[type="text"]').val(),
-                        price: $(this).find('input[type="number"]').val(),
-                        location: $(this).find('input[type="text"]').val(),
-                        timestamp: new Date().toISOString()
-                    });
-                    localStorage.setItem('pendingReports', JSON.stringify(reports));
+                // Simulate API call delay
+                setTimeout(function() {
+                    generateSampleResults(query);
+                    $('#loading-spinner').hide();
                     
-                    alert('Report saved locally and will submit when back online');
-                } else {
-                    // Simulate API submission
-                    alert('Thank you for your emergency report! This information could help save lives.');
-                }
-                
-                $(this).trigger('reset');
-            });
+                    // Scroll to results
+                    $('html, body').animate({
+                        scrollTop: $("#results-container").offset().top - 100
+                    }, 500);
+                }, 1500);
+            }
             
-            // Load any pending reports when back online
-            window.addEventListener('online', function() {
-                const pendingReports = JSON.parse(localStorage.getItem('pendingReports'));
-                if (pendingReports && pendingReports.length > 0) {
-                    // In a real app, this would submit to your backend
-                    alert(`Submitting ${pendingReports.length} saved reports`);
-                    localStorage.removeItem('pendingReports');
-                }
-            });
+            function generateSampleResults(query) {
+                // Generate results from multiple platforms
+                const sampleResults = [];
+                
+                platforms.forEach(platform => {
+                    const discount = Math.floor(Math.random() * 60);
+                    const originalPrice = Math.floor(Math.random() * 50000) + 1000;
+                    const price = originalPrice - (originalPrice * discount / 100);
+                    
+                    sampleResults.push({
+                        name: `${query} (${platform.name} Special)`,
+                        price: price.toFixed(2),
+                        originalPrice: originalPrice.toFixed(2),
+                        discount: discount,
+                        platform: platform.name,
+                        logo: platform.logo,
+                        platformClass: platform.class,
+                        rating: (Math.random() * 1 + 4).toFixed(1),
+                        reviews: Math.floor(Math.random() * 10000),
+                        inStock: Math.random() > 0.2,
+                        delivery: Math.random() > 0.5 ? "Free Delivery" : "Delivery: ₹49"
+                    });
+                });
+                
+                // Update result count
+                $('#result-count').text(`${sampleResults.length} results for "${query}"`);
+                
+                // Generate product cards
+                sampleResults.forEach(product => {
+                    const discountBadge = product.discount > 0 ? 
+                        `<span class="discount-badge me-2">${product.discount}% OFF</span>` : '';
+                    
+                    const originalPrice = product.discount > 0 ? 
+                        `<span class="original-price ms-2">₹${product.originalPrice}</span>` : '';
+                    
+                    const stockBadge = product.inStock ? 
+                        `<small class="text-success"><i class="fas fa-check-circle me-1"></i>In Stock</small>` :
+                        `<small class="text-danger"><i class="fas fa-times-circle me-1"></i>Out of Stock</small>`;
+                    
+                    const productCard = `
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="product-card">
+                                <div class="position-relative">
+                                    <img src="https://via.placeholder.com/300?text=${encodeURIComponent(query)}" class="product-img img-fluid w-100" alt="${product.name}">
+                                    <span class="platform-tag">
+                                        <img src="${product.logo}" alt="${product.platform}" height="16" class="me-1">
+                                        <span class="${product.platformClass}">${product.platform}</span>
+                                    </span>
+                                </div>
+                                <div class="p-3">
+                                    <h5 class="mb-2">${product.name}</h5>
+                                    <div class="d-flex align-items-center mb-2">
+                                        ${discountBadge}
+                                        ${stockBadge}
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="price">₹${product.price}</span>
+                                        ${originalPrice}
+                                    </div>
+                                    <div class="d-flex mb-3">
+                                        <div class="me-2">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <small>${product.rating} (${product.reviews})</small>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-shipping-fast text-primary"></i>
+                                            <small>${product.delivery}</small>
+                                        </div>
+                                    </div>
+                                    <a href="https://www.${product.platform.toLowerCase().replace(' ', '')}.com" class="view-btn btn btn-sm" target="_blank">
+                                        <i class="fas fa-external-link-alt me-1"></i>View on ${product.platform}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    $('#results-container').append(productCard);
+                });
+            }
         });
     </script>
 </body>
